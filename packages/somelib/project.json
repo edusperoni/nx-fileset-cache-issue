@@ -1,0 +1,43 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/somelib/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "inputs": ["{projectRoot}/**/*","!{projectRoot}/sometool/**/*"],
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/somelib",
+        "main": "packages/somelib/src/index.ts",
+        "tsConfig": "packages/somelib/tsconfig.lib.json",
+        "assets": ["packages/somelib/*.md"]
+      },
+      "dependsOn": ["othertarget"]
+    },
+    "othertarget": {
+      "executor": "@nrwl/workspace:run-commands",
+      "inputs": ["{projectRoot}/sometool/**/*"],
+      "outputs": ["packages/somelib/src/otherfile.ts"],
+      "options": {
+        "commands": ["packages/somelib/sometool/createfile.sh"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/somelib/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/somelib"],
+      "options": {
+        "jestConfig": "packages/somelib/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
